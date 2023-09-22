@@ -1,0 +1,130 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+struct Cliente {
+    string nombre;
+    char categoria;
+    int edad;
+    double montoC;
+    double montoD;
+    double montoP;
+};
+
+void ingresarCliente(Cliente &cliente) {
+    cin.ignore();
+    cout << "Nombre: ";
+    getline(cin, cliente.nombre);
+
+    cout << "Categoría (A/B/C): ";
+    cin >> cliente.categoria;
+
+    while (cliente.categoria != 'A' && cliente.categoria != 'B' && cliente.categoria != 'C' && cliente.categoria != 'a' && cliente.categoria != 'b' && cliente.categoria != 'c' ) {
+        cout << "Categoría inválida. Ingrese A, B o C: ";
+        cin >> cliente.categoria;
+    }
+
+    cout << "Edad: ";
+    cin >> cliente.edad;
+
+    while (cliente.edad < 0 || cliente.edad > 150) {
+        cout << "Edad inválida. Ingrese una edad válida: ";
+        cin >> cliente.edad;
+    }
+
+    cout << "Monto de Compra: $";
+    cin >> cliente.montoC;
+
+    while (cliente.montoC < 0) {
+        cout << "Monto inválido. Ingrese un monto válido: $";
+        cin >> cliente.montoC;
+    }
+}
+
+void calcularDescuento(Cliente &cliente) {
+    switch (cliente.categoria) {
+        case 'A':
+            cliente.montoD = 0.10 * cliente.montoC;
+            break;
+        case 'B':
+            cliente.montoD = 0.20 * cliente.montoC;
+            break;
+        case 'C':
+            cliente.montoD = 0.30 * cliente.montoC;
+            break;
+    }
+
+    cliente.montoP = cliente.montoC - cliente.montoD;
+}
+
+void mostrarCliente(const Cliente &cliente) {
+    cout << left << setw(20) << cliente.nombre;
+    cout << setw(5) << cliente.categoria;
+    cout << setw(5) << cliente.edad;
+    cout << setw(15) << fixed << setprecision(2) << cliente.montoC;
+    cout << setw(15) << fixed << setprecision(2) << cliente.montoD;
+    cout << setw(15) << fixed << setprecision(2) << cliente.montoP;
+    cout << endl;
+}
+
+int main() {
+    int numClientes;
+    cout << "Ingrese el número de clientes (1-100): ";
+    cin >> numClientes;
+
+    while (numClientes < 1 || numClientes > 100) {
+        cout << "Número de clientes inválido. Ingrese un número entre 1 y 100: ";
+        cin >> numClientes;
+    }
+
+    Cliente clientes[100];
+
+    for (int i = 0; i < numClientes; i++) {
+        cout << "\nCliente " << i + 1 << ":" << endl;
+        ingresarCliente(clientes[i]);
+        calcularDescuento(clientes[i]);
+    }
+
+    cout << "\nReporte de Clientes:\n";
+    cout << left << setw(20) << "Nombre";
+    cout << setw(5) << "Cat.";
+    cout << setw(5) << "Edad";
+    cout << setw(15) << "Monto Compra";
+    cout << setw(15) << "Monto Desc.";
+    cout << setw(15) << "Monto Pagar";
+    cout << endl;
+
+    for (int i = 0; i < numClientes; i++) {
+        mostrarCliente(clientes[i]);
+    }
+
+    int cantidadCategoriaA = 0;
+
+    int cantidadCategoriaAMayores25 = 0;
+
+    double totalMontoPagarCategoriaA = 0;
+
+    double totalMontoPagarCategoriaAMenoresIgual25 = 0;
+
+    for (int i = 0; i < numClientes; i++) {
+        if (clientes[i].categoria == 'A' && 'a') {
+            cantidadCategoriaA++;
+            totalMontoPagarCategoriaA += clientes[i].montoP;
+
+            if (clientes[i].edad > 25) {
+                cantidadCategoriaAMayores25++;
+            }
+
+            if (clientes[i].edad <= 25) {
+                totalMontoPagarCategoriaAMenoresIgual25 += clientes[i].montoP;
+            }
+        }
+    }
+
+    cout << "\nCantidad de clientes de categoría A: " << cantidadCategoriaA << endl;
+    cout << "Cantidad de clientes de categoría A con edades mayores a 25: " << cantidadCategoriaAMayores25 << endl;
+    cout << "Total de monto a pagar de clientes de categoría A: $" << totalMontoPagarCategoriaA << endl;
+    cout << "Total de monto a pagar de clientes de categoría A con edades menores o iguales a 25: $" << totalMontoPagarCategoriaAMenoresIgual25 << endl;
+
+    return 0;
+}
